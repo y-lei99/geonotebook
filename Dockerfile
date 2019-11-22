@@ -34,7 +34,8 @@ RUN apt-get install -y git \
                        python-concurrent.futures \
                        cython \
                        python-scikits-learn \
-                       python-scikits.statsmodels \
+                       python-statsmodels \
+                       python-statsmodels-lib \
                        python-skimage-lib
 
 # Generates pip2.7
