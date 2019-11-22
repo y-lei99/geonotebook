@@ -66,9 +66,9 @@ ADD ./devops/docker/jupyter.sh /jupyter.sh
 
 WORKDIR /opt/geonotebook
 
-RUN pip3 install -r prerequirements.txt && \
-    pip3 install -r requirements.txt && \
-    pip3 install . && \
+RUN pip2.7 install -r prerequirements.txt && \
+    pip2.7 install -r requirements.txt && \
+    pip2.7 install . && \
     jupyter serverextension enable --py geonotebook --sys-prefix && \
     jupyter nbextension enable --py geonotebook --sys-prefix
 
