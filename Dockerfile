@@ -20,29 +20,31 @@ RUN apt-get install -y git \
                        libffi-dev \
                        libssl-dev \
                        python-pip \
-                       python-cffi \
-                       python-lxml \
-                       python-pil \
-                       python-numpy \
-                       python-scipy \
-                       python-pandas \
-                       python-matplotlib \
-                       python-seaborn \
-                       python-concurrent.futures \
+                       python3-pip \
+                       python3-cffi \
+                       python3-lxml \
+                       python3-pil \
+                       python3-numpy \
+                       python3-scipy \
+                       python3-pandas \
+                       python3-matplotlib \
+                       python3-seaborn \
+                       python3-concurrent.futures \
                        cython \
-                       python-scikits-learn \
-                       python-scikits.statsmodels \
-                       python-skimage-lib
+                       cpython3 \
+                       python3-scikits-learn \
+                       python3-scikits.statsmodels \
+                       python3-skimage-lib
 
 # Generates pip2.7
 RUN pip install -U pip
 
-RUN pip2.7 install -U jupyter notebook \
+RUN pip3 install -U jupyter notebook \
                    mapnik \
                    pyproj \
                    ipywidgets \
                    scikit-image
-
+RUN pip2.7 install -U mapnik
 RUN jupyter nbextension enable --py widgetsnbextension --sys-prefix
 
 # Generate default config and disable authentication
@@ -53,7 +55,7 @@ RUN sed -i "s/#c.NotebookApp.token = '<generated>'/c.NotebookApp.token = ''/" /r
 RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.1/install.sh | bash \
     && . /root/.bashrc && nvm install v6.10.1 && ln -s /root/.nvm/versions/node/v6.10.1/bin/npm /usr/bin/npm
 
-RUN pip2.7 install https://github.com/OpenGeoscience/KTile/archive/master.zip
+RUN pip3 install https://github.com/OpenGeoscience/KTile/archive/master.zip
 
 
 ADD . /opt/geonotebook
@@ -61,9 +63,9 @@ ADD ./devops/docker/jupyter.sh /jupyter.sh
 
 WORKDIR /opt/geonotebook
 
-RUN pip2.7 install -r prerequirements.txt && \
-    pip2.7 install -r requirements.txt && \
-    pip2.7 install . && \
+RUN pip3 install -r prerequirements.txt && \
+    pip3 install -r requirements.txt && \
+    pip3 install . && \
     jupyter serverextension enable --py geonotebook --sys-prefix && \
     jupyter nbextension enable --py geonotebook --sys-prefix
 
