@@ -40,7 +40,7 @@ RUN apt-get install -y git \
 
 # Generates pip2.7
 RUN pip install -U pip
-RUN pip3 install -U pip3
+
 
 RUN pip3 install -U jupyter notebook \
                    pyproj \
