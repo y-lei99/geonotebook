@@ -31,19 +31,17 @@ RUN apt-get install -y git \
                        python3-pandas \
                        python3-matplotlib \
                        python3-seaborn \
-                       python3-concurrent.futures \
+                       python-concurrent.futures \
                        cython \
-                       cpython3 \
-                       python3-scikits-learn \
-                       python3-scikits.statsmodels \
-                       python3-skimage-lib
+                       python-scikits-learn \
+                       python-scikits.statsmodels \
+                       python-skimage-lib
 
 # Generates pip2.7
 RUN pip install -U pip
 RUN pip3 install -U pip3
 
 RUN pip3 install -U jupyter notebook \
-                   mapnik \
                    pyproj \
                    ipywidgets \
                    scikit-image \
