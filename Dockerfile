@@ -1,4 +1,4 @@
-FROM debian:8.7
+FROM Ubuntu:18.04
 
 RUN apt-get update -y && apt-get upgrade -y
 RUN apt-get install -y gcc g++ make curl
@@ -38,6 +38,7 @@ RUN apt-get install -y git \
 
 # Generates pip2.7
 RUN pip install -U pip
+RUN pip3 install -U pip3
 
 RUN pip3 install -U jupyter notebook \
                    mapnik \
