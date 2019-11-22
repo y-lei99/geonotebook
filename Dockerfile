@@ -1,6 +1,7 @@
 FROM ubuntu:18.04
 
-RUN apt-get update -y && apt-get upgrade -y
+ARG DEBIAN_FRONTEND=noninteractive
+RUN apt-get update -y && apt-get upgrade -y --assume-yes apt-utils
 RUN apt-get install -y gcc g++ make curl
 
 RUN apt-get install -y libgeos-dev
@@ -19,6 +20,7 @@ RUN apt-get install -y git \
                        ssh \
                        libffi-dev \
                        libssl-dev \
+                       libproj-dev \
                        python-pip \
                        python3-pip \
                        python3-cffi \
@@ -44,12 +46,13 @@ RUN pip3 install -U jupyter notebook \
                    mapnik \
                    pyproj \
                    ipywidgets \
-                   scikit-image
+                   scikit-image \
+                   pyOpenSSL
 RUN pip2.7 install -U mapnik
 RUN jupyter nbextension enable --py widgetsnbextension --sys-prefix
 
 # Generate default config and disable authentication
-RUN jupyter-notebook --generate-config
+RUN jupyter-notebook --generate-config --allow-root
 RUN sed -i "s/#c.NotebookApp.token = '<generated>'/c.NotebookApp.token = ''/" /root/.jupyter/jupyter_notebook_config.py
 
 # Install/setup NVM
