@@ -1,4 +1,4 @@
-numpy==1.11.1
+numpy
 jupyter-client==4.4.0
 ipykernel==4.5.2
 notebook==4.3.1
