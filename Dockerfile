@@ -56,8 +56,8 @@ RUN jupyter-notebook --generate-config --allow-root
 RUN sed -i "s/#c.NotebookApp.token = '<generated>'/c.NotebookApp.token = ''/" /root/.jupyter/jupyter_notebook_config.py
 
 # Install/setup NVM
-RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.1/install.sh | zsh \
-    && . /root/.zshrc && nvm install v6.10.1 && ln -s /root/.nvm/versions/node/v6.10.1/bin/npm /usr/bin/npm
+RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.1/install.sh | bash \
+    && . /root/.bashrc && nvm install v6.10.1 && ln -s /root/.nvm/versions/node/v6.10.1/bin/npm /usr/bin/npm
 
 RUN pip2.7 install https://github.com/OpenGeoscience/KTile/archive/master.zip
 
