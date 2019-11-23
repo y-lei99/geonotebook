@@ -37,7 +37,7 @@ RUN apt-get install -y git \
                        python-pandas \
                        python-matplotlib \
                        python-seaborn \
-                       python-distutils \
+                       python3-distutils \
                        python-concurrent.futures \
                        cython \
                        python-scikits-learn \
