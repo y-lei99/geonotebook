@@ -7,6 +7,14 @@ RUN apt-get -y install nodejs npm
 
 RUN apt-get install -y libgeos-dev
 
+RUN curl -O https://pypi.python.org/packages/source/s/setuptools/setuptools-19.6.tar.gz
+RUN tar -xzf setuptools-19.6.tar.gz
+
+WORKDIR setuptools-19.6
+
+RUN python3 -U setup.py build && python3 -U setup.py install
+RUN ldconfig
+
 RUN curl -O http://download.osgeo.org/gdal/2.1.3/gdal-2.1.3.tar.gz
 RUN tar -xzf gdal-2.1.3.tar.gz
 
@@ -61,11 +69,6 @@ RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.1/install.sh
 
 RUN pip3 install https://github.com/OpenGeoscience/KTile/archive/master.zip
 
-RUN curl -O https://pypi.python.org/packages/source/s/setuptools/setuptools-19.6.tar.gz
-RUN tar -xzf setuptools-19.6.tar.gz
-WORKDIR setuptools-19.6
-RUN python3 -U setup.py build && python3 -U setup.py install
-RUN ldconfig
 
 ADD . /opt/geonotebook
 ADD ./devops/docker/jupyter.sh /jupyter.sh
