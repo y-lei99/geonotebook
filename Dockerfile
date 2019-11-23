@@ -1,7 +1,7 @@
 FROM ubuntu:16.04
 
 RUN apt-get update -y && apt-get upgrade -y
-RUN apt-get install pkg-config
+RUN apt-get install -y pkg-config
 RUN apt-get install -y --no-install-recommends apt-utils
 RUN apt-get install -y gcc g++ make curl
 
