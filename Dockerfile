@@ -7,6 +7,7 @@ RUN apt-get install -y wget
 RUN apt-get -y install nodejs npm
 
 RUN apt-get install -y libgeos-dev
+RUN apt-get -y install python3.6
 
 RUN wget https://pypi.python.org/packages/source/s/setuptools/setuptools-19.1.tar.gz
 RUN tar -zxvf setuptools-19.1.tar.gz
