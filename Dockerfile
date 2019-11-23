@@ -13,7 +13,7 @@ RUN tar -zxvf setuptools-19.6.tar.gz
 
 WORKDIR setuptools-19.6
 
-RUN python3 -U setup.py build && python3 -U setup.py install
+RUN python -U setup.py build && python -U setup.py install
 RUN ldconfig
 
 RUN curl -O http://download.osgeo.org/gdal/2.1.3/gdal-2.1.3.tar.gz
