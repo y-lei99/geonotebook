@@ -61,17 +61,23 @@ RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.1/install.sh
 
 RUN pip3 install https://github.com/OpenGeoscience/KTile/archive/master.zip
 
+RUN curl -O https://pypi.python.org/packages/source/s/setuptools/setuptools-19.6.tar.gz
+RUN tar -xzf setuptools-19.6.tar.gz
+WORKDIR setuptools-19.6
+RUN python3 -U setup.py build && python3 -U setup.py install
+RUN ldconfig
 
 ADD . /opt/geonotebook
 ADD ./devops/docker/jupyter.sh /jupyter.sh
 
 WORKDIR /opt/geonotebook
+ 
 
-RUN pip3 install -r prerequirements.txt && \
-    pip3 install -r requirements.txt && \
-    pip3 install . && \
-    jupyter serverextension enable --py geonotebook --sys-prefix && \
-    jupyter nbextension enable --py geonotebook --sys-prefix
+RUN pip3 install -r prerequirements.txt
+RUN pip3 install -r requirements.txt
+RUN pip3 install .
+RUN jupyter serverextension enable --py geonotebook --sys-prefix
+RUN jupyter nbextension enable --py geonotebook --sys-prefix
 
 VOLUME /notebooks
 WORKDIR /notebooks
