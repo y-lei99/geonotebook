@@ -27,7 +27,7 @@ RUN apt-get install -y git \
                        libffi-dev \
                        libssl-dev \
                        libproj-dev \
-                       python-pip \
+                       #python-pip \
                        python3-pip \
                        python3-cffi \
                        python3-lxml \
@@ -54,7 +54,7 @@ RUN python3.6 setup.py build && python3.6 setup.py install
 RUN ldconfig
 
 # Generates pip2.7
-RUN pip install -U pip
+#RUN pip install -U pip
 
 
 RUN pip3 install -U jupyter notebook \
@@ -62,7 +62,7 @@ RUN pip3 install -U jupyter notebook \
                    ipywidgets \
                    scikit-image \
                    pyOpenSSL
-RUN pip2.7 install -U mapnik
+RUN pip3 install -U mapnik
 RUN jupyter nbextension enable --py widgetsnbextension --sys-prefix
 
 # Generate default config and disable authentication
@@ -73,7 +73,7 @@ RUN sed -i "s/#c.NotebookApp.token = '<generated>'/c.NotebookApp.token = ''/" /r
 RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.1/install.sh | bash \
     && . /root/.bashrc && nvm install v6.10.1 && ln -s /root/.nvm/versions/node/v6.10.1/bin/npm /usr/bin/npm
 
-RUN pip2.7 install https://github.com/OpenGeoscience/KTile/archive/master.zip
+RUN pip3 install https://github.com/OpenGeoscience/KTile/archive/master.zip
 
 
 ADD . /opt/geonotebook
