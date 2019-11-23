@@ -62,7 +62,7 @@ RUN pip3 install -U jupyter notebook \
                    ipywidgets \
                    scikit-image \
                    pyOpenSSL
-RUN pip3 install -U mapnik
+#RUN pip3 install -U mapnik
 RUN jupyter nbextension enable --py widgetsnbextension --sys-prefix
 
 # Generate default config and disable authentication
