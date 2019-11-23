@@ -1,5 +1,5 @@
 ansible
-GDAL
+
 jupyter
 rasterio
 futures
