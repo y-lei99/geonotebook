@@ -2,7 +2,8 @@ FROM ubuntu:18.04
 
 ARG DEBIAN_FRONTEND=noninteractive
 RUN apt-get update -y && apt-get upgrade -y --assume-yes apt-utils
-RUN apt-get install -y gcc g++ make curl wget
+RUN apt-get install -y gcc g++ make curl 
+RUN apt-get install -y wget
 RUN apt-get -y install nodejs npm
 
 RUN apt-get install -y libgeos-dev
