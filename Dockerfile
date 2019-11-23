@@ -8,12 +8,12 @@ RUN apt-get -y install nodejs npm
 
 RUN apt-get install -y libgeos-dev
 
-RUN wget https://pypi.python.org/packages/source/s/setuptools/setuptools-18.1.tar.gz
-RUN tar -zxvf setuptools-18.1.tar.gz
+RUN wget https://pypi.python.org/packages/source/s/setuptools/setuptools-19.1.tar.gz
+RUN tar -zxvf setuptools-19.1.tar.gz
 
-WORKDIR setuptools-18.1
+WORKDIR setuptools-19.1
 
-RUN python -U setup.py build && python -U setup.py install
+RUN python3.6 setup.py build && python3.6 setup.py install
 RUN ldconfig
 
 RUN curl -O http://download.osgeo.org/gdal/2.1.3/gdal-2.1.3.tar.gz
