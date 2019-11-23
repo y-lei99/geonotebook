@@ -8,8 +8,8 @@ promise
 Shapely
 fiona
 six
+ipykernel
 matplotlib
 pyproj
 pandas
-mapnik
 lxml
