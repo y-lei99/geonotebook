@@ -1,14 +1,10 @@
 ansible
-
-jupyter
 rasterio
 futures
 requests
 promise
 Shapely
 fiona
-six
-ipykernel
 matplotlib
 pyproj
 pandas
