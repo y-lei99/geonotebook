@@ -7,15 +7,9 @@ RUN apt-get install -y wget
 RUN apt-get -y install nodejs npm
 
 RUN apt-get install -y libgeos-dev
-RUN apt-get -y install python3.6
 
-RUN wget https://pypi.python.org/packages/source/s/setuptools/setuptools-19.1.tar.gz
-RUN tar -zxvf setuptools-19.1.tar.gz
 
-WORKDIR setuptools-19.1
 
-RUN python3.6 setup.py build && python3.6 setup.py install
-RUN ldconfig
 
 RUN curl -O http://download.osgeo.org/gdal/2.1.3/gdal-2.1.3.tar.gz
 RUN tar -xzf gdal-2.1.3.tar.gz
@@ -29,6 +23,7 @@ RUN ldconfig
 
 RUN apt-get install -y git \
                        ssh \
+                       python3.6 \
                        libffi-dev \
                        libssl-dev \
                        libproj-dev \
@@ -42,12 +37,21 @@ RUN apt-get install -y git \
                        python3-pandas \
                        python3-matplotlib \
                        python3-seaborn \
+                       python3-distutils \
                        python-concurrent.futures \
                        cython \
                        python-scikits-learn \
                        python-statsmodels \
                        python-statsmodels-lib \
                        python-skimage-lib
+                       
+RUN wget https://pypi.python.org/packages/source/s/setuptools/setuptools-19.1.tar.gz
+RUN tar -zxvf setuptools-19.1.tar.gz
+
+WORKDIR setuptools-19.1
+
+RUN python3.6 setup.py build && python3.6 setup.py install
+RUN ldconfig
 
 # Generates pip2.7
 RUN pip install -U pip
