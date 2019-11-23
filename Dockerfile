@@ -23,20 +23,20 @@ RUN ldconfig
 
 RUN apt-get install -y git \
                        ssh \
-                       python3.6 \
+                       python3.6.2 \
                        libffi-dev \
                        libssl-dev \
                        libproj-dev \
                        python-pip \
                        python3-pip \
-                       python-cffi \
-                       python-lxml \
-                       python-pil \
-                       python-numpy \
-                       python-scipy \
-                       python-pandas \
-                       python-matplotlib \
-                       python-seaborn \
+                       python3-cffi \
+                       python3-lxml \
+                       python3-pil \
+                       python3-numpy \
+                       python3-scipy \
+                       python3-pandas \
+                       python3-matplotlib \
+                       python3-seaborn \
                        python3-distutils \
                        python-concurrent.futures \
                        cython \
@@ -57,7 +57,7 @@ RUN ldconfig
 RUN pip install -U pip
 
 
-RUN pip2.7 install -U jupyter notebook \
+RUN pip3 install -U jupyter notebook \
                    pyproj \
                    ipywidgets \
                    scikit-image \
@@ -82,9 +82,9 @@ ADD ./devops/docker/jupyter.sh /jupyter.sh
 WORKDIR /opt/geonotebook
  
 
-RUN pip2.7 install -r prerequirements.txt
-RUN pip2.7 install -r requirements.txt
-RUN pip2.7 install .
+RUN pip3 install -U -r prerequirements.txt
+RUN pip3 install -U -r requirements.txt
+RUN pip3 install .
 RUN jupyter serverextension enable --py geonotebook --sys-prefix
 RUN jupyter nbextension enable --py geonotebook --sys-prefix
 
