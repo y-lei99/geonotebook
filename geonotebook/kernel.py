@@ -513,7 +513,7 @@ class GeonotebookKernel(IPythonKernel):
         
         self.comm.send({
             "method": "set_protocol",
-            "data": self.geonotebook.get_protocol()
+            "data": list(self.geonotebook.get_protocol())
         })
 
         # THis should be handled in a callback that is fired off
