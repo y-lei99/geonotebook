@@ -7,8 +7,8 @@ RUN apt-get -y install nodejs npm
 
 RUN apt-get install -y libgeos-dev
 
-RUN curl -O https://pypi.python.org/packages/source/s/setuptools/setuptools-19.6.tar.gz
-RUN tar -xzf setuptools-19.6.tar.gz
+RUN wget https://pypi.python.org/packages/source/s/setuptools/setuptools-19.6.tar.gz
+RUN tar -zxvf setuptools-19.6.tar.gz
 
 WORKDIR setuptools-19.6
 
