@@ -29,15 +29,15 @@ RUN apt-get install -y git \
                        libproj-dev \
                        python-pip \
                        python3-pip \
-                       python3-cffi \
-                       python3-lxml \
-                       python3-pil \
-                       python3-numpy \
-                       python3-scipy \
-                       python3-pandas \
-                       python3-matplotlib \
-                       python3-seaborn \
-                       python3-distutils \
+                       python-cffi \
+                       python-lxml \
+                       python-pil \
+                       python-numpy \
+                       python-scipy \
+                       python-pandas \
+                       python-matplotlib \
+                       python-seaborn \
+                       python-distutils \
                        python-concurrent.futures \
                        cython \
                        python-scikits-learn \
@@ -57,7 +57,7 @@ RUN ldconfig
 RUN pip install -U pip
 
 
-RUN pip3 install -U jupyter notebook \
+RUN pip2.7 install -U jupyter notebook \
                    pyproj \
                    ipywidgets \
                    scikit-image \
@@ -73,7 +73,7 @@ RUN sed -i "s/#c.NotebookApp.token = '<generated>'/c.NotebookApp.token = ''/" /r
 RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.1/install.sh | bash \
     && . /root/.bashrc && nvm install v6.10.1 && ln -s /root/.nvm/versions/node/v6.10.1/bin/npm /usr/bin/npm
 
-RUN pip3 install https://github.com/OpenGeoscience/KTile/archive/master.zip
+RUN pip2.7 install https://github.com/OpenGeoscience/KTile/archive/master.zip
 
 
 ADD . /opt/geonotebook
@@ -82,9 +82,9 @@ ADD ./devops/docker/jupyter.sh /jupyter.sh
 WORKDIR /opt/geonotebook
  
 
-RUN pip3 install -r prerequirements.txt
-RUN pip3 install -r requirements.txt
-RUN pip3 install .
+RUN pip2.7 install -r prerequirements.txt
+RUN pip2.7 install -r requirements.txt
+RUN pip2.7 install .
 RUN jupyter serverextension enable --py geonotebook --sys-prefix
 RUN jupyter nbextension enable --py geonotebook --sys-prefix
 
