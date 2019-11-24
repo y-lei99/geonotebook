@@ -23,7 +23,7 @@ RUN ldconfig
 
 RUN apt-get install -y git \
                        ssh \
-                       python3.6.2 \
+                       python3.6 \
                        libffi-dev \
                        libssl-dev \
                        libproj-dev \
