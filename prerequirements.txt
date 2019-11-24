@@ -1,5 +1,5 @@
 numpy
 jupyter-client==4.4.0
-ipykernel
-notebook
+ipykernel==4.5.2
+notebook==4.3.1
 https://github.com/OpenGeoscience/KTile/archive/master.zip
