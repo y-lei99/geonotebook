@@ -8,7 +8,7 @@ promise
 Shapely
 fiona
 six
-ipykernel
+ipykernel==4.5.2
 matplotlib
 pyproj
 pandas
