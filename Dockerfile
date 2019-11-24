@@ -58,6 +58,8 @@ RUN ldconfig
 
 
 RUN pip3 install -U jupyter notebook \
+                   jupyter_contrib_nbextensions \
+                   helpful_package \
                    pyproj \
                    ipywidgets \
                    scikit-image \
