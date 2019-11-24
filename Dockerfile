@@ -1,8 +1,8 @@
 FROM ubuntu:16.04
 
 RUN apt-get update -y && apt-get upgrade -y
-RUN apt-get install -y pkg-config
-RUN apt-get install -y --no-install-recommends apt-utils
+#RUN apt-get install -y pkg-config
+#RUN apt-get install -y --no-install-recommends apt-utils
 RUN apt-get install -y gcc g++ make curl
 
 RUN apt-get install -y libgeos-dev
@@ -40,9 +40,7 @@ RUN apt-get install -y git \
 # Generates pip2.7
 RUN pip install -U pip
 
-RUN pip2.7 install -U six \ 
-                   decorator\
-                   jupyter notebook \
+RUN pip2.7 install -U  jupyter notebook \
                    mapnik \
                    pyproj \
                    ipywidgets \
