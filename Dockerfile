@@ -65,7 +65,7 @@ RUN pip3 install -U jupyter notebook \
                    scikit-image \
                    pyOpenSSL
 #RUN pip3 install -U mapnik
-RUN jupyter nbextension enable --py widgetsnbextension --sys-prefix
+RUN jupyter nbextension enable --py helpful_package --sys-prefix
 
 # Generate default config and disable authentication
 RUN jupyter-notebook --generate-config --allow-root
