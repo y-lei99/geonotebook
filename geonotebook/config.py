@@ -27,7 +27,7 @@ def get_config(path=None):
             try:
                 with open(os.path.expanduser(
                         os.path.expandvars(p)), 'r') as fh:
-                    conf.readfp(fh)
+                    conf.parser.read_file(fh)
                     found = True
             except IOError:
                 pass
