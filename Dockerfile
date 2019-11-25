@@ -1,33 +1,26 @@
 FROM ubuntu:18.04
 
 ARG DEBIAN_FRONTEND=noninteractive
-RUN apt-get update -y && apt-get upgrade -y --assume-yes apt-utils
+RUN apt-get update -y && apt-get upgrade -y 
+#--assume-yes apt-utils
 RUN apt-get install -y gcc g++ make curl 
 RUN apt-get install -y wget
-RUN apt-get -y install nodejs npm
+#RUN apt-get -y install nodejs npm
 
 RUN apt-get install -y libgeos-dev
 
-
-
-
-RUN curl -O http://download.osgeo.org/gdal/2.1.3/gdal-2.1.3.tar.gz
-RUN tar -xzf gdal-2.1.3.tar.gz
-
-WORKDIR gdal-2.1.3
-
-RUN ./configure
-RUN make -j$(nproc)
-RUN make install
-RUN ldconfig
-
 RUN apt-get install -y git \
+                       unzip \
+                       pkg-config \
                        ssh \
                        python3.6 \
                        libffi-dev \
                        libssl-dev \
                        libproj-dev \
                        #python-pip \
+                       python3-dev \
+                       python3-setuptools \
+                       python3-wheel \
                        python3-pip \
                        python3-cffi \
                        python3-lxml \
@@ -45,16 +38,26 @@ RUN apt-get install -y git \
                        python-statsmodels-lib \
                        python-skimage-lib
                        
-RUN wget https://pypi.python.org/packages/source/s/setuptools/setuptools-19.1.tar.gz
-RUN tar -zxvf setuptools-19.1.tar.gz
+RUN curl -O http://download.osgeo.org/gdal/2.1.3/gdal-2.1.3.tar.gz
+RUN tar -xzf gdal-2.1.3.tar.gz
 
-WORKDIR setuptools-19.1
+WORKDIR gdal-2.1.3
 
-RUN python3.6 setup.py build && python3.6 setup.py install
+RUN ./configure
+RUN make -j$(nproc)
+RUN make install
 RUN ldconfig
+                       
+#RUN wget https://pypi.python.org/packages/source/s/setuptools/setuptools-19.1.tar.gz
+#RUN tar -zxvf setuptools-19.1.tar.gz
+
+#WORKDIR setuptools-19.1
+
+#RUN python3.6 setup.py build && python3.6 setup.py install
+#RUN ldconfig
 
 # Generates pip2.7
-#RUN pip install -U pip
+RUN pip3 install -U pip tox
 
 
 RUN pip3 install -U jupyter notebook \
