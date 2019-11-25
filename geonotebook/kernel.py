@@ -1,4 +1,4 @@
-from inspect import getfullargspec, getmembers, isfunction, ismethod
+from inspect import getargspec, getmembers, isfunction, ismethod
 from types import MethodType
 
 from ipykernel.ipkernel import IPythonKernel
@@ -197,7 +197,7 @@ class Geonotebook(object):
         """
         if cls._protocol is None:
             def _method_protocol(fn, method):
-                spec = getfullargspec(method)
+                spec = getargspec(method)
                 # spec.args[1:] so we don't include 'self'
                 params = spec.args[1:]
                 # The number of optional arguments
