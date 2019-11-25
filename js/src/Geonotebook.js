@@ -1,7 +1,7 @@
 import _ from 'underscore';
 import Split from 'split.js';
 
-import MapObject from './MapObject';
+import MapObject from 'map_renderer';
 import {
   is_response,
   is_request,
