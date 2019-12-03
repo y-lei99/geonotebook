@@ -1,0 +1,90 @@
+# Copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
+
+ARG BASE_CONTAINER=jupyter/minimal-notebook
+FROM $BASE_CONTAINER
+LABEL maintainer="Jupyter Project <jupyter@googlegroups.com>"
+
+USER root
+
+# ffmpeg for matplotlib anim
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends ffmpeg && \
+    rm -rf /var/lib/apt/lists/*
+
+USER $NB_UID
+
+RUN apt-get install -y libgeos-dev
+
+RUN conda install --quiet --yes \
+                       'pyproj' 
+                       'gdal=2.1.3'\
+                       'pkg-config' \
+                       'ssh' \
+                       'libffi-dev' \
+                       'libssl-dev' \
+                       'libproj-dev' \
+                       'setuptools' \
+                       'wheel' \
+                       'pip' \
+                       'cffi' \
+                       'lxml' \
+                       'pil' \
+                       'numpy' \
+                       'scipy' \
+                       'pandas' \
+                       'matplotlib' \
+                       'seaborn' \
+                       'distutils' \
+                       'concurrent.futures' \
+                       'cython' \
+                       'scikits-learn' \
+                       'statsmodels' \
+                       'statsmodels-lib' \
+                       'skimage-lib' \
+                       'pyOpenSSL' \
+                       'scikit-image' \
+                       && \
+                       conda clean --all -f -y && \
+                       jupyter nbextension enable --py widgetsnbextension --sys-prefix && \
+                       jupyter labextension install @jupyter-widgets/jupyterlab-manager@^1.0.1 --no-build && \
+                       jupyter labextension install jupyterlab_bokeh@1.0.0 --no-build && \
+                       jupyter lab build && \
+                       npm cache clean --force && \
+                       rm -rf $CONDA_DIR/share/jupyter/lab/staging && \
+                       rm -rf /home/$NB_USER/.cache/yarn && \
+                       rm -rf /home/$NB_USER/.node-gyp && \
+                       fix-permissions $CONDA_DIR && \
+                       fix-permissions /home/$NB_USER
+                       
+
+# Generates pip2.7
+RUN pip install -U pip tox
+
+
+# Generate default config and disable authentication
+RUN jupyter-notebook --generate-config
+RUN sed -i "s/#c.NotebookApp.token = '<generated>'/c.NotebookApp.token = ''/" /etc/.jupyter/jupyter_notebook_config.py
+
+# Install/setup NVM
+#RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.1/install.sh | bash \
+#    && . /root/.bashrc && nvm install v6.10.1 && ln -s /root/.nvm/versions/node/v6.10.1/bin/npm /usr/bin/npm
+
+RUN pip install https://github.com/OpenGeoscience/KTile/archive/master.zip
+
+
+ADD . /opt/geonotebook
+ADD ./devops/docker/jupyter.sh /jupyter.sh
+
+WORKDIR /opt/geonotebook
+ 
+
+RUN pip install -U -r prerequirements.txt && \
+    pip install -U -r requirements.txt . && \
+    jupyter serverextension enable --py geonotebook --sys-prefix && \
+    jupyter nbextension enable --py geonotebook --sys-prefix
+
+VOLUME /notebooks
+WORKDIR /notebooks
+
+ENTRYPOINT ["/jupyter.sh"]
