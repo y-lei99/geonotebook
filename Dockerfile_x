@@ -18,7 +18,7 @@ RUN apt-get install -y libgeos-dev
 
 RUN conda install --quiet --yes \
                        'pyproj' 
-                       'gdal=2.1.3'\
+                       'gdal'\
                        'pkg-config' \
                        'ssh' \
                        'libffi-dev' \
