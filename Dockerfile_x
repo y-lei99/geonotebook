@@ -78,7 +78,7 @@ RUN pip install -U pip tox
 
 USER root
 # Generate default config and disable authentication
-RUN jupyter-notebook --generate-config --allow-root
+RUN jupyter-notebook --generate-config -y
 RUN sed -i "s/#c.NotebookApp.token = '<generated>'/c.NotebookApp.token = ''/" /etc/.jupyter/jupyter_notebook_config.py
 
 # Install/setup NVM
