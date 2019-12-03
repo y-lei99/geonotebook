@@ -10,6 +10,17 @@ USER root
 # ffmpeg for matplotlib anim
 RUN apt-get update && \
     apt-get install -y --no-install-recommends ffmpeg && \
+    apt-get install -y scikits-learn \
+                libgeos-dev \
+                libssl-dev \
+                concurrent.futures \
+                pil \
+                distutils \
+                ssh \
+                libproj-dev \
+                libffi-dev \
+                statsmodels-lib \
+                skimage-lib && \
     rm -rf /var/lib/apt/lists/*
 
 #RUN apt-get install -y libgeos-dev
@@ -63,17 +74,7 @@ RUN conda install --quiet --yes \
 
 # Generates pip2.7
 RUN pip install -U pip tox 
-RUN pip install scikits-learn \
-                libgeos-dev \
-                libssl-dev \
-                concurrent.futures \
-                pil \
-                distutils \
-                ssh \
-                libproj-dev \
-                libffi-dev \
-                statsmodels-lib \
-                skimage-lib                   
+                   
 
 
 # Generate default config and disable authentication
