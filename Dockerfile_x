@@ -10,17 +10,17 @@ USER root
 # ffmpeg for matplotlib anim
 RUN apt-get update && \
     apt-get install -y --no-install-recommends ffmpeg && \
-    apt-get install -y scikits-learn \
-                libgeos-dev \
-                libssl-dev \
-                concurrent.futures \
-                pil \
-                distutils \
-                ssh \
-                libproj-dev \
-                libffi-dev \
-                statsmodels-lib \
-                skimage-lib && \
+    #apt-get install -y scikits-learn \
+     #           libgeos-dev \
+      #          libssl-dev \
+       #         concurrent.futures \
+        #        pil \
+         #       distutils \
+         #       ssh \
+          #      libproj-dev \
+           #     libffi-dev \
+            #    statsmodels-lib \
+             #   skimage-lib && \
     rm -rf /var/lib/apt/lists/*
 
 #RUN apt-get install -y libgeos-dev
