@@ -88,8 +88,8 @@ RUN sed -i "s/#c.NotebookApp.token = '<generated>'/c.NotebookApp.token = ''/" /h
 RUN pip install https://github.com/OpenGeoscience/KTile/archive/master.zip
 
 
-ADD /$CONDA_DIR/geonotebook
-ADD $CONDA_DIR/devops/docker/jupyter.sh /jupyter.sh
+ADD .  /$CONDA_DIR/geonotebook
+ADD ./$CONDA_DIR/devops/docker/jupyter.sh /jupyter.sh
 
 WORKDIR /$CONDA_DIR/geonotebook
  
