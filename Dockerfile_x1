@@ -1,4 +1,4 @@
-FROM jupyter/base-notebook:lab-1.2.1
+FROM pangeo/pangeo-notebook:2019.12.04
 
 USER root
 
