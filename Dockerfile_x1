@@ -11,8 +11,8 @@ RUN echo 'PS1="\u@\h:\w\\$ \[$(tput sgr0)\]"' >> /root/.bashrc \
     && chgrp root /etc/passwd \
     && chmod ug+rw /etc/passwd \
     && useradd -m -s /bin/bash -N -u $NB_UID $NB_USER \
-    && usermod -g root $NB_USER \
-    && yum install -y curl wget bzip2 gnupg2 sqlite3 epel-release tar git gcc gcc-c++ glibc-devel
+    && usermod -g root $NB_USER 
+    # && yum install -y curl wget bzip2 gnupg2 sqlite3 epel-release tar git gcc gcc-c++ glibc-devel
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends ffmpeg && \
