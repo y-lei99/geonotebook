@@ -6,7 +6,7 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends ffmpeg && \
     rm -rf /var/lib/apt/lists/*
 USER $NB_UID
-
+ADD fix-permissions.sh /usr/local/bin/fix-permissions.sh
 
 RUN conda install conda
 RUN conda install -c conda-forge gdal
