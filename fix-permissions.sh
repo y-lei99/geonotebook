@@ -1,35 +1,25 @@
-#!/bin/bash
-# set permissions on a directory
-# after any installation, if a directory needs to be (human) user-writable,
-# run this script on it.
-# It will make everything in the directory owned by the group $NB_GID
-# and writable by that group.
-# Deployments that want to set a specific user id can preserve permissions
-# by adding the `--group-add users` line to `docker run`.
+#!/bin/sh
 
-# uses find to avoid touching files that already have the right permissions,
-# which would cause massive image explosion
+# Allow this script to fail without failing a build
+set +e
 
-# right permissions are:
-# group=$NB_GID
-# AND permissions include group rwX (directory-execute)
-# AND directories have setuid,setgid bits set
+# Fix permissions on the given directory or file to allow group read/write of
+# regular files and execute of directories.
 
-set -e
+[ $(id -u) -ne 0 ] && CHECK_OWNER=" -uid $(id -u)"
 
-for d in "$@"; do
-  find "$d" \
-    ! \( \
-      -group $NB_GID \
-      -a -perm -g+rwX  \
-    \) \
-    -exec chgrp $NB_GID {} \; \
-    -exec chmod g+rwX {} \;
-  # setuid,setgid *on directories only*
-  find "$d" \
-    \( \
-        -type d \
-        -a ! -perm -6000  \
-    \) \
-    -exec chmod +6000 {} \;
-done
+# If argument does not exist, script will still exit with 0,
+# but at least we'll see something went wrong in the log
+if ! [ -e "$1" ] ; then
+  echo "ERROR: File or directory $1 does not exist." >&2
+  # We still want to end successfully
+  exit 0
+fi
+
+find -L "$1" ${CHECK_OWNER} \! -gid 0 -exec chgrp 0 {} +
+find -L "$1" ${CHECK_OWNER} \! -perm -g+rw -exec chmod g+rw {} +
+find -L "$1" ${CHECK_OWNER} -perm /u+x -a \! -perm /g+x -exec chmod g+x {} +
+find -L "$1" ${CHECK_OWNER} -type d \! -perm /g+x -exec chmod g+x {} +
+
+# Always end successfully
+exit 0
