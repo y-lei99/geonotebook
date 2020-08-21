@@ -2,6 +2,15 @@ FROM pangeo/pangeo-notebook:2019.12.04
 
 USER root
 
+RUN echo 'PS1="\u@\h:\w\\$ \[$(tput sgr0)\]"' >> /root/.bashrc \
+    && chgrp -R root /opt \
+    && chmod -R ug+rwx /opt \
+    && chgrp root /etc/passwd \
+    && chmod ug+rw /etc/passwd \
+    && useradd -m -s /bin/bash -N -u $NB_UID $NB_USER \
+    && usermod -g root $NB_USER \
+    # && yum install -y curl wget bzip2 gnupg2 sqlite3 epel-release tar git gcc gcc-c++ glibc-devel
+
 RUN apt-get update && \
     apt-get install -y --no-install-recommends ffmpeg && \
     rm -rf /var/lib/apt/lists/*
