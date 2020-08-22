@@ -1,17 +1,17 @@
 ansible   #修改
 #GDAL      #修改
-jupyter
-rasterio
+#jupyter
+#rasterio
 futures
 requests
 promise
 Shapely
 fiona
 six
-jupyter-client
-notebook
-ipykernel
-matplotlib
-pyproj
-pandas
+#jupyter-client
+#notebook
+#ipykernel
+#matplotlib
+#pyproj
+#pandas
 lxml
