@@ -2,10 +2,10 @@ FROM jupyter/base-notebook:lab-1.2.1
 
 
 USER root
-RUN apt-get update -y && apt-get upgrade -y
+RUN apt-get update -y
 RUN apt-get install -y --no-install-recommends ffmpeg && \
     rm -rf /var/lib/apt/lists/*
-RUN apt-get install -y gcc g++ make curl
+#RUN apt-get install -y gcc g++ make curl
 USER $NB_UID
 # ADD fix-permissions.sh /usr/local/bin/fix-permissions.sh
 
@@ -65,7 +65,7 @@ WORKDIR /$CONDA_DIR/geonotebook
  
 
 RUN pip install -U -r prerequirements.txt && \
-    pip install -U -r requirements.txt . && \
+    conda install --quiet --yes requirements.txt . && \
     jupyter serverextension enable --py geonotebook --sys-prefix && \
     jupyter nbextension enable --py geonotebook --sys-prefix \
     fix-permissions $CONDA_DIR && \
