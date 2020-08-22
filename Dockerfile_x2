@@ -1,79 +1,20 @@
-FROM jupyter/base-notebook:lab-1.2.1
-
-
-USER root
-RUN apt-get update -y
-RUN apt-get install -y --no-install-recommends ffmpeg && \
-    rm -rf /var/lib/apt/lists/*
-#RUN apt-get install -y gcc g++ make curl
-USER $NB_UID
-# ADD fix-permissions.sh /usr/local/bin/fix-permissions.sh
+FROM pangeo/pangeo-notebook:2019.12.04
 
 #RUN conda install conda
-RUN conda install -c conda-forge gdal
-RUN conda install -c conda-forge nodejs
-RUN conda install --quiet --yes \
-                       'curl' \
-                       'pyproj' \
-                       'pkg-config' \
-                       'ipywidgets' \
-                       'setuptools' \
-                       'wheel' \
-                       'pip' \
-                       'cffi' \
-                       'lxml' \
-                       'numpy' \
-                       'scipy' \
-                       'pandas' \
-                       'matplotlib' \
-                       'seaborn' \
-                       'cython' \
-                       'statsmodels' \
-                       'pyOpenSSL' \
-                       'scikit-image' \
-                       && \
-                       conda clean --all -f -y && \
-                       jupyter nbextension enable --py widgetsnbextension --sys-prefix && \
-                       jupyter labextension install @jupyter-widgets/jupyterlab-manager@^1.0.1 --no-build && \
-                       jupyter labextension install jupyterlab_bokeh@1.0.0 --no-build && \
-                       jupyter lab build && \
-                       npm cache clean --force && \
-                       rm -rf $CONDA_DIR/share/jupyter/lab/staging && \
-                       rm -rf /home/$NB_USER/.cache/yarn && \
-                       rm -rf /home/$NB_USER/.node-gyp && \
-                       fix-permissions $CONDA_DIR && \
-                       fix-permissions /home/$NB_USER
-                       
-
-# Generates pip2.7
-RUN pip install -U pip tox 
-                   
-
-USER root
-# Generate default config and disable authentication
-RUN jupyter-notebook --generate-config --allow-root -y
-RUN sed -i "s/#c.NotebookApp.token = '<generated>'/c.NotebookApp.token = ''/" /home/jovyan/.jupyter/jupyter_notebook_config.py
-
-
-RUN pip install https://github.com/OpenGeoscience/KTile/archive/master.zip
-
-
+#RUN conda install -c conda-forge gdal
 ADD .  /$CONDA_DIR/geonotebook
-ADD ./devops/docker/jupyter.sh /jupyter.sh
+#ADD ./devops/docker/jupyter.sh /jupyter.sh
 
 WORKDIR /$CONDA_DIR/geonotebook
- 
-
+#RUN conda install -c conda-forge gdal
 RUN pip install -U -r prerequirements.txt . && \
     pip install -U -r requirements.txt && \
     conda install -c conda-forge gdal && \
     jupyter serverextension enable --py geonotebook --sys-prefix && \
-    jupyter labextension enable --py geonotebook --sys-prefix \
-    fix-permissions $CONDA_DIR && \
-    fix-permissions /home/$NB_USER
+    jupyter labextension enable --py geonotebook --sys-prefix 
 
 #VOLUME /notebooks
 #WORKDIR /notebooks
 USER $NB_UID
-ENTRYPOINT ["/jupyter.sh"]
-CMD ["start.sh", "jupyter", "lab"]
+#ENTRYPOINT ["/jupyter.sh"]
+CMD ["jupyterhub", "--no-ssl", "--Spawner.notebook_dir=/$CONDA_DIR/geonotebook]
