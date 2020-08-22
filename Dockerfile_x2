@@ -1,4 +1,4 @@
-FROM pangeo/pangeo-notebook:2019.12.04
+FROM jupyter/jupyter-notebook
 
 
 USER root
@@ -40,9 +40,9 @@ RUN conda install --quiet --yes \
                        npm cache clean --force && \
                        rm -rf $CONDA_DIR/share/jupyter/lab/staging && \
                        rm -rf /home/$NB_USER/.cache/yarn && \
-                       rm -rf /home/$NB_USER/.node-gyp
-                       #fix-permissions $CONDA_DIR && \
-                       #fix-permissions /home/$NB_USER
+                       rm -rf /home/$NB_USER/.node-gyp && \
+                       fix-permissions $CONDA_DIR && \
+                       fix-permissions /home/$NB_USER
                        
 
 # Generates pip2.7
@@ -64,12 +64,12 @@ ADD ./devops/docker/jupyter.sh /jupyter.sh
 WORKDIR /$CONDA_DIR/geonotebook
  
 
-#RUN pip install -U -r prerequirements.txt && \
-   # pip install -U -r requirements.txt . && \
-RUN jupyter serverextension enable --py geonotebook --sys-prefix && \
-    jupyter nbextension enable --py geonotebook --sys-prefix 
-    #fix-permissions $CONDA_DIR && \
-    #fix-permissions /home/$NB_USER
+RUN pip install -U -r prerequirements.txt && \
+    pip install -U -r requirements.txt . && \
+    jupyter serverextension enable --py geonotebook --sys-prefix && \
+    jupyter nbextension enable --py geonotebook --sys-prefix \
+    fix-permissions $CONDA_DIR && \
+    fix-permissions /home/$NB_USER
 
 #VOLUME /notebooks
 #WORKDIR /notebooks
