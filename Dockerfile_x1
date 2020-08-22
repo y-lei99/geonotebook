@@ -1,5 +1,4 @@
-FROM pangeo/pangeo-notebook:2019.12.04
-
+FROM jupyter/base-notebook:lab-1.2.1
 
 USER root
 
@@ -7,11 +6,10 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends ffmpeg && \
     rm -rf /var/lib/apt/lists/*
 USER $NB_UID
-ADD fix-permissions.sh /usr/local/bin/fix-permissions.sh
 
-RUN conda install conda
+
+
 RUN conda install -c conda-forge gdal
-RUN conda install -c conda-forge nodejs
 RUN conda install --quiet --yes \
                        'curl' \
                        'pyproj' \
