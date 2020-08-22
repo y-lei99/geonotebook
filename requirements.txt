@@ -1,5 +1,5 @@
 ansible   #修改
-#GDAL      #修改
+GDAL      #修改
 jupyter
 rasterio
 futures
