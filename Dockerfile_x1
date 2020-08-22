@@ -59,6 +59,10 @@ RUN pip install https://github.com/OpenGeoscience/KTile/archive/master.zip
 
 ADD .  /$CONDA_DIR/geonotebook
 ADD ./devops/docker/jupyter.sh /jupyter.sh
+ADD ./devops/docker/start.sh /start.sh
+ADD ./devops/docker/start-notebook.sh /start-notebook.sh
+ADD ./devops/docker/start-singleuser.sh /start-singleuser.sh
+COPY ./devops/docker/start.sh ./devops/docker/start-notebook.sh ./devops/docker/start-singleuser.sh /usr/local/bin/
 
 WORKDIR /$CONDA_DIR/geonotebook
  
