@@ -6,6 +6,7 @@ USER root
 RUN apt-get update && \
     apt-get install -y --no-install-recommends ffmpeg && \
     rm -rf /var/lib/apt/lists/*
+RUN apt-get install -y gcc g++ make curl
 USER $NB_UID
 # ADD fix-permissions.sh /usr/local/bin/fix-permissions.sh
 
