@@ -17,19 +17,19 @@ RUN set -ex \
          automake \
          gcc \
          python3 \
-         python3-pip \
-         python3-cffi \
-         python3-lxml \
-         python3-pillow \
-         python3-numpy \
-         python3-scipy \
-         python3-pandas \
-         python3-matplotlib \
-         python3-seaborn \
-         python3-statsmodels \
-         python3-scikit-learn \
+         pip3 \
+         cffi \
+         lxml \
+         pillow \
+         numpy \
+         scipy \
+         pandas \
+         matplotlib \
+         seaborn \
+         statsmodels \
+         scikit-learn \
          cython \
-         python3-futures \
+         futures \
          gdal \
          mapnik \
          sed
