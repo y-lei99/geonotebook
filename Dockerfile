@@ -1,4 +1,4 @@
-FROM base/archlinux:latest
+FROM archlinux/base:latest
 
 RUN set -ex \
     && pacman -Sy --noconfirm archlinux-keyring \
