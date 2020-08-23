@@ -80,4 +80,4 @@ EXPOSE 8888
 WORKDIR $HOME
 USER $NB_UID
 ENTRYPOINT ["tini","-g","--"]
-CMD ["start.sh"]
+CMD ["jupyter.sh"]
