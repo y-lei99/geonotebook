@@ -64,7 +64,7 @@ RUN pip install -U -r prerequirements.txt . && \
 #VOLUME /notebooks
 #WORKDIR /notebooks
 
-USER $NB_USER
+USER $NB_UID
 
 #ENTRYPOINT ["/jupyter.sh"]
 #CMD ["jupyterhub", "--no-ssl", "--Spawner.notebook_dir=/$CONDA_DIR/geonotebook]
