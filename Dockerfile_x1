@@ -78,4 +78,4 @@ RUN pip install -U -r prerequirements.txt && \
 #WORKDIR /notebooks
 USER $NB_UID
 ENTRYPOINT ["/jupyter.sh"]
-CMD ["start.sh", "jupyter", "lab"]
+#CMD ["start.sh", "jupyter", "lab"]
