@@ -6,7 +6,7 @@ RUN apt-get update && \
     apt-get -y install gcc python3-dev python3-pip libxml2-dev libxslt1-dev zlib1g-dev g++ && \
     apt-get install -y --no-install-recommends ffmpeg && \
     rm -rf /var/lib/apt/lists/*
-USER $NB_USER
+USER $NB_UID
 
 
 
@@ -42,7 +42,7 @@ RUN conda install --quiet --yes \
                        rm -rf /home/$NB_USER/.cache/yarn && \
                        rm -rf /home/$NB_USER/.node-gyp && \
                        fix-permissions $CONDA_DIR && \
-                       fix-permissions /home/$NB_USER
+                       fix-permissions /home/$NB_UID
 # Generates pip2.7
 RUN pip install -U pip tox
 
