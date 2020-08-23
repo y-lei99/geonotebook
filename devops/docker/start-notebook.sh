@@ -11,9 +11,9 @@ fi
 
 if [[ ! -z "${JUPYTERHUB_API_TOKEN}" ]]; then
     # launched by JupyterHub, use single-user entrypoint
-    exec /opt/conda/geonotebook/start-singleuser.sh "$@"
+    exec /opt/conda/geonotebook/jupyter.sh "$@"
 elif [[ ! -z "${JUPYTER_ENABLE_LAB}" ]]; then
-    . /opt/conda/geonotebook/start.sh $wrapper jupyter lab "$@"
+    . /opt/conda/geonotebook/jupyter.sh $wrapper jupyter lab "$@"
 else
-    . /opt/conda/geonotebook/start.sh $wrapper jupyter notebook "$@"
+    . /opt/conda/geonotebook/jupyter.sh $wrapper jupyter notebook "$@"
 fi
