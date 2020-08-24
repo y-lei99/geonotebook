@@ -46,9 +46,9 @@ RUN conda install --quiet --yes \
 # Generates pip2.7
 RUN pip install -U pip tox
 
-USER root
+#USER root
 # Generate default config and disable authentication
-RUN jupyter-notebook --generate-config --allow-root -y
+RUN jupyter-notebook --generate-config   #--allow-root -y
 RUN sed -i "s/#c.NotebookApp.token = '<generated>'/c.NotebookApp.token = ''/" /home/jovyan/.jupyter/jupyter_notebook_config.py
 
 RUN pip install https://github.com/OpenGeoscience/KTile/archive/master.zip
@@ -83,8 +83,8 @@ RUN fix-permissions /jupyter.sh
 #VOLUME /notebooks
 #WORKDIR /notebooks
 
-#USER $NB_UID
-USER root
+USER $NB_UID
+#USER root
 #ENTRYPOINT ["tini","-g","--"]
 #CMD ["jupyter.sh"]
 #ENTRYPOINT ["/jupyter.sh"]
