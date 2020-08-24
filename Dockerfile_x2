@@ -6,7 +6,7 @@ RUN apt-get update && \
     apt-get -y install gcc python3-dev python3-pip libxml2-dev libxslt1-dev zlib1g-dev g++ && \
     apt-get install -y --no-install-recommends ffmpeg && \
     rm -rf /var/lib/apt/lists/*
-USER $NB_USER
+USER $NB_UID
 
 
 
@@ -71,7 +71,7 @@ RUN fix-permissions /$CONDA_DIR/geonotebook
 #VOLUME /notebooks
 #WORKDIR /notebooks
 
-#USER NB$UID
+USER $NB_UID
 
-#ENTRYPOINT ["/jupyter.sh"]
+ENTRYPOINT ["/jupyter.sh"]
 #CMD ["jupyterhub", "--no-ssl", "--Spawner.notebook_dir=/$CONDA_DIR/geonotebook]
