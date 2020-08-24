@@ -46,7 +46,7 @@ RUN conda install --quiet --yes \
 # Generates pip2.7
 RUN pip install -U pip tox
 
-#USER root
+USER root
 # Generate default config and disable authentication
 RUN jupyter-notebook --generate-config -y
 RUN sed -i "s/#c.NotebookApp.token = '<generated>'/c.NotebookApp.token = ''/" /home/jovyan/.jupyter/jupyter_notebook_config.py
@@ -83,9 +83,9 @@ RUN fix-permissions /jupyter.sh
 #VOLUME /notebooks
 #WORKDIR /notebooks
 
-#USER $NB_UID
-USER root
-#ENTRYPOINT ["tini","-g","--"]
-#CMD ["jupyter.sh"]
+USER $NB_UID
+#USER root
+ENTRYPOINT ["tini","-g","--"]
+CMD ["jupyter","notebook","--allow-root"]
 #ENTRYPOINT ["/jupyter.sh"]
 #CMD ["jupyterhub", "--no-ssl", "--Spawner.notebook_dir=/$CONDA_DIR/geonotebook]
