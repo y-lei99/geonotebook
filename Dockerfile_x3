@@ -87,5 +87,5 @@ RUN fix-permissions /jupyter.sh
 USER $NB_UID
 #USER root
 ENTRYPOINT ["tini","-g","--"]
-CMD ["jupyter","notebook","--allow-root"]
+CMD ["jupyter","lab","--allow-root"]
 
