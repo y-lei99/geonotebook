@@ -88,5 +88,5 @@ RUN pip install -U -r prerequirements.txt . && \
 USER $NB_UID
 WORKDIR /home
 #USER root
-ENTRYPOINT ["tini","-g","--"]
+#ENTRYPOINT ["tini","-g","--"]
 CMD ["jupyter","notebook","--allow-root"]
