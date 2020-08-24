@@ -70,14 +70,19 @@ RUN pip install -U -r prerequirements.txt . && \
     conda install -c conda-forge gdal && \
     jupyter serverextension enable --py geonotebook --sys-prefix && \
     jupyter nbextension enable --py geonotebook --sys-prefix
-    #jupyter labextension enable geonotebook --sys-prefix 
+    jupyter labextension enable geonotebook --sys-prefix 
 RUN fix-permissions /$CONDA_DIR/geonotebook
+RUN fix-permissions /usr/local/bin/
+RUN fix-permissions /start.sh
+RUN fix-permissions /start-notebook.sh
+RUN fix-permissions /start-singleuser.sh
+RUN fix-permissions /jupyter.sh
 
 #VOLUME /notebooks
 #WORKDIR /notebooks
 
-#USER $NB_UID
-USER root
+USER $NB_UID
+#USER root
 #ENTRYPOINT ["tini","-g","--"]
 #CMD ["jupyter.sh"]
 #ENTRYPOINT ["/jupyter.sh"]
