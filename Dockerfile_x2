@@ -52,7 +52,7 @@ RUN pip install https://github.com/OpenGeoscience/KTile/archive/master.zip
 ADD .  /$CONDA_DIR/geonotebook
 #ADD ./devops/docker/jupyter.sh /jupyter.sh
 
-#WORKDIR /$CONDA_DIR/geonotebook
+WORKDIR /$CONDA_DIR/geonotebook
 #RUN conda install -c conda-forge gdal
 RUN pip install -U -r prerequirements.txt . && \
     pip install -U -r requirements.txt && \
