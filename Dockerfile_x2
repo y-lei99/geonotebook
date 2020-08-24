@@ -77,7 +77,7 @@ RUN fix-permissions /$CONDA_DIR/geonotebook
 #WORKDIR /notebooks
 
 #USER $NB_UID
-USER $NB_UID
+USER root
 #ENTRYPOINT ["tini","-g","--"]
 #CMD ["jupyter.sh"]
 #ENTRYPOINT ["/jupyter.sh"]
