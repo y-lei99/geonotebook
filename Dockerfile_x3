@@ -30,6 +30,15 @@ RUN conda install --quiet --yes \
                        'statsmodels' \
                        'pyOpenSSL' \
                        'scikit-image' \
+                       'python-blosc' \
+                       'cytoolz' \
+                       'dask' \
+                       'lz4' \
+                       'nomkl' \
+                       'distributed' \
+                       'dask-kubernetes' \
+                       'xarray' \
+                       'rasterio' \
                        #'jupyterhub=1.1.0' \
                        && \
                        conda clean --all -f -y && \
@@ -43,6 +52,8 @@ RUN conda install --quiet --yes \
                        rm -rf /home/$NB_USER/.node-gyp && \
                        fix-permissions $CONDA_DIR && \
                        fix-permissions /home/$NB_USER
+                       
+
 # Generates pip2.7
 RUN pip install -U pip tox
 
@@ -62,6 +73,8 @@ ADD ./devops/docker/start-notebook.sh /start-notebook.sh
 ADD ./devops/docker/start-singleuser.sh /start-singleuser.sh
 COPY ./devops/docker/start.sh ./devops/docker/start-notebook.sh ./devops/docker/start-singleuser.sh /usr/local/bin/
 COPY ./devops/docker/start.sh ./devops/docker/start-notebook.sh ./devops/docker/start-singleuser.sh /$CONDA_DIR/geonotebook/
+COPY condarc.yml /$CONDA_DIR/.condarc
+COPY dask_config.yml /CONDA_DIR/etc/dask.yml
 
 WORKDIR /$CONDA_DIR/geonotebook
 #RUN conda install -c conda-forge gdal
@@ -70,10 +83,9 @@ RUN pip install -U -r prerequirements.txt . && \
     conda install -c conda-forge gdal && \
     #jupyter labextension install geonotebook && \
     jupyter serverextension enable --py geonotebook --sys-prefix && \
-    jupyter nbextension enable --py geonotebook --sys-prefix && \
+    jupyter nbextension enable --py geonotebook --sys-prefix 
     #jupyter labextension install geonotebook --sys-prefix && \
-    jupyter labextension enable geonotebook && \
-    jupyter lab build
+    #jupyter labextension enable geonotebook 
 RUN fix-permissions /$CONDA_DIR/geonotebook
 RUN fix-permissions /usr/local/bin/
 RUN fix-permissions /start.sh
@@ -87,5 +99,7 @@ RUN fix-permissions /jupyter.sh
 USER $NB_UID
 #USER root
 ENTRYPOINT ["tini","-g","--"]
-CMD ["jupyter","lab","--allow-root"]
+CMD ["jupyter","notebook","--allow-root"]
+#ENTRYPOINT ["/jupyter.sh"]
+#CMD ["jupyterhub", "--no-ssl", "--Spawner.notebook_dir=/$CONDA_DIR/geonotebook]
 
