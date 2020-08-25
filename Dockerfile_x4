@@ -30,6 +30,13 @@ RUN conda install --quiet --yes \
                        'statsmodels' \
                        'pyOpenSSL' \
                        'scikit-image' \
+                       'python-blosc' \
+                       'cytoolz' \
+                       'dask' \
+                       'lz4' \
+                       'nomkl' \
+                       'distributed' \
+                       #dask-kubernetes \
                        #'jupyterhub=1.1.0' \
                        && \
                        conda clean --all -f -y && \
@@ -65,11 +72,6 @@ COPY ./devops/docker/start.sh ./devops/docker/start-notebook.sh ./devops/docker/
 
 WORKDIR /$CONDA_DIR/geonotebook
 #RUN conda install -c conda-forge gdal
-
-RUN conda install -c conda-forge dask dask-core distributed dask-ml dask-kubernetes gcsfs h5py cloudpickle matplotlib scipy
-#RUN pip install distributed==2.9.0 dask-kubernetes==0.10.0 gcsfs==0.6.0 h5py==2.10.0 cloudpickle==1.2.2 matplotlib==3.1.2 scipy==1.4.1
-RUN conda install numba netCDF4 xarray rasterio
-
 RUN pip install -U -r prerequirements.txt . && \
     pip install -U -r requirements.txt && \
     conda install -c conda-forge gdal && \
