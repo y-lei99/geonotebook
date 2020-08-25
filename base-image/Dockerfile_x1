@@ -1,5 +1,7 @@
 FROM jupyter/base-notebook:lab-2.2.5
 COPY --chown=jovyan:jovyan . /srv
+RUN chown -R jovyan:jovyan && \
+    /srv
 RUN echo "Copying configuration files..." \
     && mv /srv/condarc.yml ${CONDA_DIR}/.condarc \
     && mv /srv/dask_config.yml ${CONDA_DIR}/etc/dask.yml
