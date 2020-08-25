@@ -101,7 +101,7 @@ RUN wget --quiet https://repo.continuum.io/miniconda/Miniconda3-py38_${MINICONDA
     fix-permissions $CONDA_DIR && \
     fix-permissions /home/$NB_USER
 COPY dask_config.yml ${CONDA_DIR}/etc/dask.yml
-COPY condarc.yml ${CONDA_DIR}/.condarc \
+COPY condarc.yml ${CONDA_DIR}/.condarc
 # Install Tini
 RUN conda install --quiet --yes 'tini=0.18.0' && \
     conda list tini | grep tini | tr -s ' ' | cut -d ' ' -f 1,2 >> $CONDA_DIR/conda-meta/pinned && \
