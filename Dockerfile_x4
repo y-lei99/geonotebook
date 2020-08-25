@@ -37,6 +37,8 @@ RUN conda install --quiet --yes \
                        'nomkl' \
                        'distributed' \
                        'dask-kubernetes' \
+                       'xarray' \
+                       'rasterio' \
                        #'jupyterhub=1.1.0' \
                        && \
                        conda clean --all -f -y && \
