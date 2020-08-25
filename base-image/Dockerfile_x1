@@ -1,5 +1,5 @@
-FROM jupyter/base-notebook:latest
-RUN sudo apt-get install docker-ce=19.03.3 -y
+FROM registry.cn-beijing.aliyuncs.com/k8s_test/geonotebook:base-image
+#RUN sudo apt-get install docker-ce=19.03.3 -y
 COPY --chown=jovyan:jovyan . /srv
 RUN echo "Copying configuration files..." \
     && mv /srv/condarc.yml ${CONDA_DIR}/.condarc \
