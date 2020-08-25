@@ -35,15 +35,24 @@ COPY --chown=jovyan:jovyan . /srv
 # and https://github.com/phusion/baseimage-docker/issues/319
 ARG DEBIAN_FRONTEND=noninteractive
 
-RUN echo "Installing Apt-get packages..." \
-    && apt-get update --fix-missing \
-    && apt-get install -y apt-utils 2> /dev/null \
-    && apt-get install -y wget \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+USER root
+COPY fix-permissions /usr/local/bin/fix-permissions
+RUN chmod a+rx /usr/local/bin/fix-permissions
+RUN apt-get update \
+ && apt-get install -yq --no-install-recommends \
+    wget \
+    bzip2 \
+    ca-certificates \
+    sudo \
+    locales \
+    fonts-liberation \
+    run-one \
+ && apt-get clean && rm -rf /var/lib/apt/lists/*
 # ========================
+#RUN fix-permissions /home/$NB_USER
 
-USER ${NB_USER}
+
+USER $NB_UID
 WORKDIR ${HOME}
 
 RUN echo "Installing Miniforge..." \
@@ -58,87 +67,52 @@ RUN echo "Installing Miniforge..." \
 RUN echo "Copying configuration files..." \
     && mv /srv/condarc.yml ${CONDA_DIR}/.condarc \
     && mv /srv/dask_config.yml ${CONDA_DIR}/etc/dask.yml
+    
+# Install Tini
+RUN conda install --quiet --yes 'tini=0.18.0' && \
+    conda list tini | grep tini | tr -s ' ' | cut -d ' ' -f 1,2 >> $CONDA_DIR/conda-meta/pinned && \
+    conda clean -afy && \
+    fix-permissions $CONDA_DIR && \
+    fix-permissions /home/$NB_USER
+    
+# Install Jupyter Notebook, Lab, and Hub
+# Generate a notebook server config
+# Cleanup temporary files
+# Correct permissions
+# Do all this in a single RUN command to avoid duplicating all of the
+# files across image layers when the permissions change
+RUN conda install --quiet --yes \
+    'notebook' \
+    'jupyterhub' \
+    'jupyterlab' && \
+    conda clean -afy && \
+    npm cache clean --force && \
+    jupyter notebook --generate-config && \
+    rm -rf $CONDA_DIR/share/jupyter/lab/staging && \
+    rm -rf /home/$NB_USER/.cache/yarn && \
+    fix-permissions $CONDA_DIR && \
+    fix-permissions /home/$NB_USER
 
 EXPOSE 8888
-ENTRYPOINT ["/srv/start"]
+
+# Configure container startup
+ENTRYPOINT ["tini", "-g", "--"]
+CMD ["start-notebook.sh"]
+
+# Copy local files as late as possible to avoid cache busting
+COPY start.sh start-notebook.sh start-singleuser.sh /usr/local/bin/
+COPY jupyter_notebook_config.py /etc/jupyter/
+
+# Fix permissions on /etc/jupyter as root
+USER root
+RUN fix-permissions /etc/jupyter/
+
+# Switch back to jovyan to avoid accidental container runs as root
+USER $NB_UID
+
+WORKDIR $HOME
+#ENTRYPOINT ["/srv/start"]
 #CMD ["jupyter", "notebook", "--ip", "0.0.0.0"]
 
 # Only run these if used as a base image
-# ----------------------
-ONBUILD USER root
-# hardcode for now
-ONBUILD COPY --chown=jovyan:jovyan . /home/jovyan
-
-ONBUILD RUN echo "Checking for 'binder' or '.binder' subfolder" \
-        ; if [ -d binder ] ; then \
-        echo "Using 'binder/' build context" \
-        ; elif [ -d .binder ] ; then \
-        echo "Using '.binder/' build context" \
-        ; else \
-        echo "Using './' build context" \
-        ; fi
-
-ONBUILD ARG DEBIAN_FRONTEND=noninteractive
-ONBUILD RUN echo "Checking for 'apt.txt'..." \
-        ; [ -d binder ] && cd binder \
-        ; [ -d .binder ] && cd .binder \
-        ; if test -f "apt.txt" ; then \
-        apt-get update --fix-missing \
-        && xargs -a apt.txt apt-get install -y \
-        && apt-get clean \
-        && rm -rf /var/lib/apt/lists/* \
-        ; fi
-
-ONBUILD USER ${NB_USER}
-
-# Create "notebook" conda environment and dask labextensions
-ONBUILD RUN echo "Checking for 'conda-linux-64.lock' or 'environment.yml'..." \
-        ; [ -d binder ] && cd binder \
-        ; [ -d .binder ] && cd .binder \
-        ; if test -f "conda-linux-64.lock" ; then \
-        conda create --name ${CONDA_ENV} --file conda-linux-64.lock \
-        ; elif test -f "environment.yml" ; then \
-        conda env create --name ${CONDA_ENV} -f environment.yml  \
-        ; else echo "No conda-linux-64.lock or environment.yml! *creating default env*" ; \
-        conda create --name ${CONDA_ENV} pangeo-notebook \
-        ; fi \
-        && conda clean -yaf \
-        && find ${CONDA_DIR} -follow -type f -name '*.a' -delete \
-        && find ${CONDA_DIR} -follow -type f -name '*.pyc' -delete \
-        && find ${CONDA_DIR} -follow -type f -name '*.js.map' -delete \
-        && find ${NB_PYTHON_PREFIX}/lib/python*/site-packages/bokeh/server/static -follow -type f -name '*.js' ! -name '*.min.js' -delete
-
-# Install pip packages
-# remove cache https://github.com/pypa/pip/pull/6391 ?
-ONBUILD RUN echo "Checking for pip 'requirements.txt'..." \
-        ; [ -d binder ] && cd binder \
-        ; [ -d .binder ] && cd .binder \
-        ; if test -f "requirements.txt" ; then \
-        ${NB_PYTHON_PREFIX}/bin/pip install --no-cache-dir -r requirements.txt \
-        ; fi
-
-# Run postBuild script within "pangeo" environment
-ONBUILD RUN echo "Checking for 'postBuild'..." \
-        ; [ -d binder ] && cd binder \
-        ; [ -d .binder ] && cd .binder \
-        ; if test -f "postBuild" ; then \
-        export PATH=${NB_PYTHON_PREFIX}/bin:${PATH} \
-        && chmod +x postBuild \
-        && ./postBuild \
-        && rm -rf /tmp/* \
-        && rm -rf ${HOME}/.cache ${HOME}/.npm ${HOME}/.yarn \
-        && rm -rf ${NB_PYTHON_PREFIX}/share/jupyter/lab/staging \
-        && find ${CONDA_DIR} -follow -type f -name '*.a' -delete \
-        && find ${CONDA_DIR} -follow -type f -name '*.pyc' -delete \
-        && find ${CONDA_DIR} -follow -type f -name '*.js.map' -delete \
-        ; fi
-
-# Overwrite start entrypoint script if present
-ONBUILD RUN echo "Checking for 'start'..." \
-        ; [ -d binder ] && cd binder \
-        ; [ -d .binder ] && cd .binder \
-        ; if test -f "start" ; then \
-        chmod +x start \
-        && cp start /srv/start \
-        ; fi
 # ----------------------
