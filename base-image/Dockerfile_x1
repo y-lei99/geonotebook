@@ -1,5 +1,5 @@
 FROM jupyter/base-notebook:lab-2.2.5
-RUN sudo apt-get install docker-ce=19.03.3
+RUN sudo apt-get install docker-ce=19.03.3 -y
 COPY --chown=jovyan:jovyan . /srv
 RUN chown -R jovyan:jovyan && \
     /srv
