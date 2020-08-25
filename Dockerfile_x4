@@ -1,75 +1,12 @@
-FROM ubuntu:18.04
-# Master build file for pangeo images
+FROM jupyter/base-notebook:lab-1.2.5
 
-# Run this section as root
-# try to keep conda version in sync with repo2docker
-# ========================
-ENV CONDA_VERSION=4.8.3-4 \
-    CONDA_ENV=notebook \
-    NB_USER=jovyan \
-    NB_UID=1000 \
-    SHELL=/bin/bash \
-    LANG=C.UTF-8  \
-    LC_ALL=C.UTF-8 \
-    CONDA_DIR=/srv/conda
+USER root
 
-ENV NB_PYTHON_PREFIX=${CONDA_DIR}/envs/${CONDA_ENV} \
-    DASK_ROOT_CONFIG=${CONDA_DIR}/etc \
-    HOME=/home/${NB_USER} \
-    PATH=${CONDA_DIR}/bin:${PATH}
-
-# Create jovyan user, permissions, add conda init to startup script
-RUN echo "Creating ${NB_USER} user..." \
-    && groupadd --gid ${NB_UID} ${NB_USER}  \
-    && useradd --create-home --gid ${NB_UID} --no-log-init --uid ${NB_UID} ${NB_USER} \
-    && echo ". ${CONDA_DIR}/etc/profile.d/conda.sh ; conda activate ${CONDA_ENV}" > /etc/profile.d/init_conda.sh \
-    && chown -R ${NB_USER}:${NB_USER} /srv
-
-# COPY chown available docker>17.09
-# but env sub only works for docker>19.03 (kubernetes>1.17)
-# https://github.com/moby/moby/issues/35018
-#COPY --chown=${NB_USER}:${NB_USER} . ${HOME}
-COPY --chown=jovyan:jovyan . /srv
-
-# SEE: https://github.com/phusion/baseimage-docker/issues/58
-# and https://github.com/phusion/baseimage-docker/issues/319
-ARG DEBIAN_FRONTEND=noninteractive
-
-RUN echo "Installing Apt-get packages..." \
-    && apt-get update --fix-missing \
-    && apt-get install -y apt-utils 2> /dev/null \
-    && apt-get install -y wget \
-    && apt-get -y install gcc python3-dev python3-pip libxml2-dev libxslt1-dev zlib1g-dev g++ \
-    && apt-get install -y --no-install-recommends ffmpeg \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
-# ========================
-
-USER ${NB_USER}
-WORKDIR ${HOME}
-
-RUN echo "Installing Miniforge..." \
-    && URL="https://github.com/conda-forge/miniforge/releases/download/${CONDA_VERSION}/Miniforge3-${CONDA_VERSION}-Linux-x86_64.sh" \
-    && wget --quiet ${URL} -O miniconda.sh \
-    && /bin/bash miniconda.sh -u -b -p ${CONDA_DIR} \
-    && rm miniconda.sh \
-    && conda clean -afy \
-    && find ${CONDA_DIR} -follow -type f -name '*.a' -delete \
-    && find ${CONDA_DIR} -follow -type f -name '*.pyc' -delete
-
-RUN echo "Copying configuration files..." \
-    && mv /srv/condarc.yml ${CONDA_DIR}/.condarc \
-    && mv /srv/dask_config.yml ${CONDA_DIR}/etc/dask.yml
-
-#EXPOSE 8888
-
-#USER root
-
-#RUN apt-get update && \
-#    apt-get -y install gcc python3-dev python3-pip libxml2-dev libxslt1-dev zlib1g-dev g++ && \
-#    apt-get install -y --no-install-recommends ffmpeg && \
-#    rm -rf /var/lib/apt/lists/*
-#USER ${NB_USER}
+RUN apt-get update && \
+    apt-get -y install gcc python3-dev python3-pip libxml2-dev libxslt1-dev zlib1g-dev g++ && \
+    apt-get install -y --no-install-recommends ffmpeg && \
+    rm -rf /var/lib/apt/lists/*
+USER $NB_UID
 
 
 
@@ -81,7 +18,7 @@ RUN conda install --quiet --yes \
                        'ipywidgets' \
                        'setuptools' \
                        'wheel' \
-                       'pip3' \
+                       'pip' \
                        'cffi' \
                        'lxml' \
                        'numpy' \
@@ -103,18 +40,18 @@ RUN conda install --quiet --yes \
                        npm cache clean --force && \
                        rm -rf $CONDA_DIR/share/jupyter/lab/staging && \
                        rm -rf /home/$NB_USER/.cache/yarn && \
-                       rm -rf /home/$NB_USER/.node-gyp
-                       #fix-permissions $CONDA_DIR && \
-                       #fix-permissions /home/$NB_USER
+                       rm -rf /home/$NB_USER/.node-gyp && \
+                       fix-permissions $CONDA_DIR && \
+                       fix-permissions /home/$NB_USER
 # Generates pip2.7
-RUN pip3 install -U pip3 tox
+RUN pip install -U pip tox
 
-#USER root
+USER root
 # Generate default config and disable authentication
 RUN jupyter-notebook --generate-config --allow-root -y
 RUN sed -i "s/#c.NotebookApp.token = '<generated>'/c.NotebookApp.token = ''/" /home/jovyan/.jupyter/jupyter_notebook_config.py
 
-RUN pip3 install https://github.com/OpenGeoscience/KTile/archive/master.zip
+RUN pip install https://github.com/OpenGeoscience/KTile/archive/master.zip
 
 
 ADD .  /$CONDA_DIR/geonotebook
@@ -128,28 +65,32 @@ COPY ./devops/docker/start.sh ./devops/docker/start-notebook.sh ./devops/docker/
 
 WORKDIR /$CONDA_DIR/geonotebook
 #RUN conda install -c conda-forge gdal
-RUN pip3 install -U -r prerequirements.txt . && \
-    pip3 install -U -r requirements.txt && \
+
+RUN conda install -c conda-forge dask dask-core distributed dask-ml dask-kubernetes gcsfs h5py cloudpickle matplotlib scipy
+#RUN pip install distributed==2.9.0 dask-kubernetes==0.10.0 gcsfs==0.6.0 h5py==2.10.0 cloudpickle==1.2.2 matplotlib==3.1.2 scipy==1.4.1
+RUN conda install numba netCDF4 xarray rasterio
+
+RUN pip install -U -r prerequirements.txt . && \
+    pip install -U -r requirements.txt && \
     conda install -c conda-forge gdal && \
     #jupyter labextension install geonotebook && \
     jupyter serverextension enable --py geonotebook --sys-prefix && \
-    jupyter nbextension enable --py geonotebook --sys-prefix
+    jupyter nbextension enable --py geonotebook --sys-prefix 
     #jupyter labextension install geonotebook --sys-prefix && \
-    #jupyter labextension enable nbextension && \
-    #jupyter labextension enable geonotebook && \
-    #jupyter lab build
-#RUN fix-permissions /$CONDA_DIR/geonotebook
-#RUN fix-permissions /usr/local/bin/
-#RUN fix-permissions /start.sh
-#RUN fix-permissions /start-notebook.sh
-#RUN fix-permissions /start-singleuser.sh
-#RUN fix-permissions /jupyter.sh
+    #jupyter labextension enable geonotebook 
+RUN fix-permissions /$CONDA_DIR/geonotebook
+RUN fix-permissions /usr/local/bin/
+RUN fix-permissions /start.sh
+RUN fix-permissions /start-notebook.sh
+RUN fix-permissions /start-singleuser.sh
+RUN fix-permissions /jupyter.sh
 
 #VOLUME /notebooks
-#WORKDIR $Home
+#WORKDIR /notebooks
 
-USER ${NB_USER}
-WORKDIR ${HOME}
+USER $NB_UID
 #USER root
-ENTRYPOINT ["/jupyter.sh"]
-#CMD ["jupyter","notebook","--allow-root"]
+ENTRYPOINT ["tini","-g","--"]
+CMD ["jupyter","notebook","--allow-root"]
+#ENTRYPOINT ["/jupyter.sh"]
+#CMD ["jupyterhub", "--no-ssl", "--Spawner.notebook_dir=/$CONDA_DIR/geonotebook]
