@@ -18,9 +18,9 @@ RUN echo "conda 4.7.10" >> $CONDA_DIR/conda-meta/pinned && \
     conda config --system --prepend channels conda-forge && \
     conda config --system --set auto_update_conda false && \
     conda config --system --set show_channel_urls true && \
-    conda config --system --set channel_priority strict && \
-    fix-permissions $CONDA_DIR && \
-    fix-permissions /home/$NB_USER
+    conda config --system --set channel_priority strict
+    #fix-permissions $CONDA_DIR && \
+    #fix-permissions /home/$NB_USER
 RUN conda install -c conda-forge gdal
 RUN conda install --quiet --yes \
                        'curl' \
@@ -51,17 +51,17 @@ RUN conda install --quiet --yes \
                        npm cache clean --force && \
                        rm -rf $CONDA_DIR/share/jupyter/lab/staging && \
                        rm -rf /home/$NB_USER/.cache/yarn && \
-                       rm -rf /home/$NB_USER/.node-gyp && \
-                       fix-permissions $CONDA_DIR && \
-                       fix-permissions /home/$NB_USER
-
+                       rm -rf /home/$NB_USER/.node-gyp
+                       
+RUN chown -R ${NB_USER}:${NB_USER} $CONDA_DIR
+RUN chown -R ${NB_USER}:${NB_USER} /home/$NB_USER
 
 # Install Tini
 RUN conda install --quiet --yes 'tini=0.18.0' && \
     conda list tini | grep tini | tr -s ' ' | cut -d ' ' -f 1,2 >> $CONDA_DIR/conda-meta/pinned && \
-    conda clean -afy && \
-    fix-permissions $CONDA_DIR && \
-    fix-permissions /home/$NB_USER
+    conda clean -afy
+RUN chown -R ${NB_USER}:${NB_USER} $CONDA_DIR
+RUN chown -R ${NB_USER}:${NB_USER} /home/$NB_USER
     
     
 # Generates pip2.7
@@ -94,12 +94,12 @@ RUN pip install -U -r prerequirements.txt . && \
     jupyter nbextension enable --py geonotebook --sys-prefix 
     #jupyter labextension install geonotebook --sys-prefix && \
     #jupyter labextension enable geonotebook 
-RUN fix-permissions /$CONDA_DIR/geonotebook
-RUN fix-permissions /usr/local/bin/
-RUN fix-permissions /start.sh
-RUN fix-permissions /start-notebook.sh
-RUN fix-permissions /start-singleuser.sh
-RUN fix-permissions /jupyter.sh
+RUN chown -R ${NB_USER}:${NB_USER} /$CONDA_DIR/geonotebook
+RUN chown -R ${NB_USER}:${NB_USER} /usr/local/bin/
+RUN chown -R ${NB_USER}:${NB_USER} /start.sh
+RUN chown -R ${NB_USER}:${NB_USER} /start-notebook.sh
+RUN chown -R ${NB_USER}:${NB_USER} /start-singleuser.sh
+RUN chown -R ${NB_USER}:${NB_USER} /jupyter.sh
 
 #VOLUME /notebooks
 #WORKDIR /notebooks
