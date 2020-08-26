@@ -14,11 +14,11 @@ RUN chmod a+rx /usr/local/bin/fix-permissions
 USER $NB_UID
 
 
-RUN echo "conda 4.7.10" >> $CONDA_DIR/conda-meta/pinned && \
-    conda config --system --prepend channels conda-forge && \
-    conda config --system --set auto_update_conda false && \
-    conda config --system --set show_channel_urls true && \
-    conda config --system --set channel_priority strict
+RUN echo "conda 4.7.10" >> $CONDA_DIR/conda-meta/pinned
+    #conda config --system --prepend channels conda-forge 
+    #conda config --system --set auto_update_conda false && \
+    #conda config --system --set show_channel_urls true && \
+    #conda config --system --set channel_priority strict
     #fix-permissions $CONDA_DIR && \
     #fix-permissions /home/$NB_USER
 RUN conda install -c conda-forge gdal
