@@ -105,6 +105,7 @@ RUN fix-permissions /jupyter.sh
 #WORKDIR /notebooks
 
 USER $NB_UID
+WORKDIR /home/$NB_USER
 #USER root
 ENTRYPOINT ["tini","-g","--"]
 CMD ["jupyter","notebook","--allow-root"]
