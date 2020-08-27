@@ -16,8 +16,8 @@ RUN /bin/bash source activate
 RUN /bin/bash conda deactivate
 RUN /bin/bash/conda activate ${CONDA_ENV}
 
-RUN echo "conda 4.7.10" >> $CONDA_DIR/envs/${CONDA_ENV}/conda-meta/pinned
-    conda config --system --prepend channels conda-forge 
+RUN echo "conda 4.7.10" >> $CONDA_DIR/envs/${CONDA_ENV}/conda-meta/pinned && \
+    conda config --system --prepend channels conda-forge && \
     conda config --system --set auto_update_conda false && \
     conda config --system --set show_channel_urls true && \
     conda config --system --set channel_priority strict
