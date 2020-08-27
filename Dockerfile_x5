@@ -12,13 +12,15 @@ COPY fix-permissions /usr/local/bin/fix-permissions
 RUN chmod a+rx /usr/local/bin/fix-permissions
 
 USER $NB_UID
+RUN /bin/bash source activate
+RUN /bin/bash conda deactivate
+RUN /bin/bash/conda activate ${CONDA_ENV}
 
-
-RUN echo "conda 4.7.10" >> $CONDA_DIR/conda-meta/pinned
-    #conda config --system --prepend channels conda-forge 
-    #conda config --system --set auto_update_conda false && \
-    #conda config --system --set show_channel_urls true && \
-    #conda config --system --set channel_priority strict
+RUN echo "conda 4.7.10" >> $CONDA_DIR/envs/${CONDA_ENV}/conda-meta/pinned
+    conda config --system --prepend channels conda-forge 
+    conda config --system --set auto_update_conda false && \
+    conda config --system --set show_channel_urls true && \
+    conda config --system --set channel_priority strict
     #fix-permissions $CONDA_DIR && \
     #fix-permissions /home/$NB_USER
 RUN conda install -c conda-forge gdal
@@ -51,7 +53,7 @@ RUN conda install --quiet --yes \
                        #jupyter labextension install jupyterlab_bokeh@1.0.0 --no-build && \
                        #jupyter lab build && \
                        npm cache clean --force && \
-                       rm -rf $CONDA_DIR/share/jupyter/lab/staging && \
+                       rm -rf $CONDA_DIR/envs/${CONDA_ENV}/share/jupyter/lab/staging && \
                        rm -rf /home/$NB_USER/.cache/yarn && \
                        rm -rf /home/$NB_USER/.node-gyp
                        
@@ -60,46 +62,46 @@ RUN conda install --quiet --yes \
 
 # Install Tini
 RUN conda install --quiet --yes 'tini=0.18.0' && \
-    conda list tini | grep tini | tr -s ' ' | cut -d ' ' -f 1,2 >> $CONDA_DIR/conda-meta/pinned && \
+    conda list tini | grep tini | tr -s ' ' | cut -d ' ' -f 1,2 >> $CONDA_DIR/envs/${CONDA_ENV}/conda-meta/pinned && \
     conda clean -afy
 #RUN chown -R ${NB_USER}:${NB_USER} $CONDA_DIR
 #RUN chown -R ${NB_USER}:${NB_USER} /home/$NB_USER
     
     
 # Generates pip2.7
-RUN pip install -U pip tox
+RUN $CONDA_DIR/envs/${CONDA_ENV}/bin/pip install -U pip tox
 
 #USER root
 # Generate default config and disable authentication
 RUN jupyter-notebook --generate-config --allow-root -y
 RUN sed -i "s/#c.NotebookApp.token = '<generated>'/c.NotebookApp.token = ''/" /home/jovyan/.jupyter/jupyter_notebook_config.py
 
-RUN pip install https://github.com/OpenGeoscience/KTile/archive/master.zip
-#RUN source activate
-#RUN conda deactivate
+RUN ${CONDA_DIR}/envs/${CONDA_ENV}/bin/pip install https://github.com/OpenGeoscience/KTile/archive/master.zip
+#RUN /bin/bash source activate
+#RUN /bin/bash conda deactivate
 #RUN conda activate ${CONDA_ENV} && \
-#    pip install https://github.com/OpenGeoscience/KTile/archive/master.zip
+#     pip install https://github.com/OpenGeoscience/KTile/archive/master.zip
 
-ADD .  /$CONDA_DIR/geonotebook
+ADD .  /$CONDA_DIR/envs/${CONDA_ENV}/geonotebook
 #ADD ./devops/docker/jupyter.sh /jupyter.sh
 ADD ./devops/docker/jupyter.sh /jupyter.sh
 ADD ./devops/docker/start.sh /start.sh
 ADD ./devops/docker/start-notebook.sh /start-notebook.sh
 ADD ./devops/docker/start-singleuser.sh /start-singleuser.sh
 COPY ./devops/docker/start.sh ./devops/docker/start-notebook.sh ./devops/docker/start-singleuser.sh /usr/local/bin/
-COPY ./devops/docker/start.sh ./devops/docker/start-notebook.sh ./devops/docker/start-singleuser.sh /$CONDA_DIR/geonotebook/
+COPY ./devops/docker/start.sh ./devops/docker/start-notebook.sh ./devops/docker/start-singleuser.sh /$CONDA_DIR/envs/${CONDA_ENV}/geonotebook/
 
-WORKDIR /$CONDA_DIR/geonotebook
+WORKDIR /$CONDA_DIR/envs/${CONDA_ENV}/geonotebook
 #RUN conda install -c conda-forge gdal
-RUN pip install -U -r prerequirements.txt . && \
-    pip install -U -r requirements.txt && \
+RUN /$CONDA_DIR/envs/${CONDA_ENV}/bin/pip install -U -r prerequirements.txt . && \
+    /$CONDA_DIR/envs/${CONDA_ENV}/bin/pip install -U -r requirements.txt && \
     conda install -c conda-forge gdal && \
     #jupyter labextension install geonotebook && \
     jupyter serverextension enable --py geonotebook --sys-prefix && \
     jupyter nbextension enable --py geonotebook --sys-prefix 
     #jupyter labextension install geonotebook --sys-prefix && \
     #jupyter labextension enable geonotebook 
-RUN chown -R ${NB_USER}:${NB_USER} /$CONDA_DIR/geonotebook
+RUN chown -R ${NB_USER}:${NB_USER} /$CONDA_DIR/envs/${CONDA_ENV}/geonotebook
 RUN chown -R ${NB_USER}:${NB_USER} /usr/local/bin/
 RUN chown -R ${NB_USER}:${NB_USER} /start.sh
 RUN chown -R ${NB_USER}:${NB_USER} /start-notebook.sh
