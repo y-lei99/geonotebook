@@ -1,5 +1,5 @@
 FROM pangeo/pangeo-notebook:2019.12.04
-
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 USER root
 
 
@@ -15,10 +15,10 @@ USER $NB_UID
 ENV CONDA_ENV=notebook
 #RUN /bin/bash source activate
 #RUN conda deactivate
-RUN conda init && \
-    conda activate ${CONDA_ENV}
-
-RUN echo "conda 4.7.10" >> $CONDA_DIR/envs/${CONDA_ENV}/conda-meta/pinned && \
+#RUN conda init && \
+#    conda activate ${CONDA_ENV}
+RUN echo "source activate ${CONDA_ENV}"
+RUN echo " conda 4.7.10" >> $CONDA_DIR/envs/${CONDA_ENV}/conda-meta/pinned && \
     conda config --system --prepend channels conda-forge && \
     conda config --system --set auto_update_conda false && \
     conda config --system --set show_channel_urls true && \
