@@ -1,5 +1,5 @@
 FROM pangeo/pangeo-notebook:2019.12.04
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+#SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 USER root
 
 
@@ -26,8 +26,7 @@ RUN echo " conda 4.7.10" >> $CONDA_DIR/envs/${CONDA_ENV}/conda-meta/pinned
     #fix-permissions $CONDA_DIR && \
     #fix-permissions /home/$NB_USER
 RUN conda install -c conda-forge gdal
-RUN conda install -c nextdoor mapnik
-RUN conda install -c nextdoor python-mapnik
+
 RUN conda install --quiet --yes \
                        'curl' \
                        'pyproj' \
@@ -78,6 +77,8 @@ RUN $CONDA_DIR/envs/${CONDA_ENV}/bin/pip install -U pip tox
 RUN jupyter-notebook --generate-config --allow-root -y
 RUN sed -i "s/#c.NotebookApp.token = '<generated>'/c.NotebookApp.token = ''/" /home/jovyan/.jupyter/jupyter_notebook_config.py
 
+RUN conda install -c nextdoor mapnik
+RUN conda install -c nextdoor python-mapnik
 RUN ${CONDA_DIR}/envs/${CONDA_ENV}/bin/pip install https://github.com/OpenGeoscience/KTile/archive/master.zip
 #RUN /bin/bash source activate
 #RUN /bin/bash conda deactivate
