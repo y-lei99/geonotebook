@@ -72,11 +72,11 @@ RUN pip install -U pip tox
 RUN jupyter-notebook --generate-config --allow-root -y
 RUN sed -i "s/#c.NotebookApp.token = '<generated>'/c.NotebookApp.token = ''/" /home/jovyan/.jupyter/jupyter_notebook_config.py
 
-RUN pip install https://github.com/OpenGeoscience/KTile/archive/master.zip
-RUN source activate
-RUN conda deactivate
-RUN conda activate ${CONDA_ENV} && \
-    pip install https://github.com/OpenGeoscience/KTile/archive/master.zip
+RUN conda install https://github.com/OpenGeoscience/KTile/archive/master.zip
+#RUN source activate
+#RUN conda deactivate
+#RUN conda activate ${CONDA_ENV} && \
+#    pip install https://github.com/OpenGeoscience/KTile/archive/master.zip
 
 ADD .  /$CONDA_DIR/geonotebook
 #ADD ./devops/docker/jupyter.sh /jupyter.sh
