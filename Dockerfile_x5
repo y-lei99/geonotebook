@@ -77,8 +77,8 @@ RUN $CONDA_DIR/envs/${CONDA_ENV}/bin/pip install -U pip tox
 RUN jupyter-notebook --generate-config --allow-root -y
 RUN sed -i "s/#c.NotebookApp.token = '<generated>'/c.NotebookApp.token = ''/" /home/jovyan/.jupyter/jupyter_notebook_config.py
 
-RUN conda install -c nextdoor mapnik
-RUN conda install -c nextdoor python-mapnik
+#RUN conda install -c nextdoor mapnik
+#RUN conda install -c nextdoor python-mapnik
 RUN ${CONDA_DIR}/envs/${CONDA_ENV}/bin/pip install https://github.com/OpenGeoscience/KTile/archive/master.zip
 #RUN /bin/bash source activate
 #RUN /bin/bash conda deactivate
