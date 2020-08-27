@@ -15,8 +15,8 @@ USER $NB_UID
 ENV CONDA_ENV=notebook
 #RUN /bin/bash source activate
 #RUN conda deactivate
-RUN conda init
-RUN conda activate ${CONDA_ENV}
+RUN conda init && \
+    conda activate ${CONDA_ENV}
 
 RUN echo "conda 4.7.10" >> $CONDA_DIR/envs/${CONDA_ENV}/conda-meta/pinned && \
     conda config --system --prepend channels conda-forge && \
