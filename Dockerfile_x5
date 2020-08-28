@@ -11,7 +11,7 @@ RUN apt-get update && \
 COPY fix-permissions /usr/local/bin/fix-permissions
 RUN chmod a+rx /usr/local/bin/fix-permissions
 
-USER $NB_UID
+USER $NB_USER
 ENV CONDA_ENV=notebook
 #RUN /bin/bash source activate
 #RUN conda deactivate
@@ -74,7 +74,7 @@ RUN $CONDA_DIR/envs/${CONDA_ENV}/bin/pip install -U pip tox
 
 #USER root
 # Generate default config and disable authentication
-RUN jupyter-notebook --generate-config --allow-root -y
+RUN jupyter-notebook --generate-config -y
 RUN sed -i "s/#c.NotebookApp.token = '<generated>'/c.NotebookApp.token = ''/" /home/jovyan/.jupyter/jupyter_notebook_config.py
 
 #RUN conda install -c nextdoor mapnik
@@ -114,10 +114,10 @@ RUN chown -R ${NB_USER}:${NB_USER} /jupyter.sh
 #VOLUME /notebooks
 #WORKDIR /notebooks
 
-USER $NB_UID
+USER $NB_USER
 WORKDIR /home/$NB_USER
 #USER root
 ENTRYPOINT ["tini","-g","--"]
-CMD ["jupyter","notebook","--ip=0.0.0.0","--port=8888","--allow-root"]
+CMD ["jupyter","notebook","--ip=0.0.0.0","--port=8888"]
 #ENTRYPOINT ["/jupyter.sh"]
 #CMD ["jupyterhub", "--no-ssl", "--Spawner.notebook_dir=/$CONDA_DIR/geonotebook]
