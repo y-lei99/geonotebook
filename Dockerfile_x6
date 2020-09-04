@@ -30,7 +30,10 @@ RUN conda install --quiet --yes \
                        'statsmodels' \
                        'pyOpenSSL' \
                        'scikit-image' \
-                       #'jupyterhub' \
+                       'dask-kubernetes' \
+                       'flask' \
+                       'sqlalchemy' \
+                       'cx_Oracle' \
                        && \
                        conda clean --all -f -y && \
                        jupyter nbextension enable --py widgetsnbextension --sys-prefix && \
