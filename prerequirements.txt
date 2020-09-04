@@ -1,5 +1,5 @@
 numpy
-#jupyter-client
-#ipykernel
-#notebook
+jupyter-client
+ipykernel
+notebook
 https://github.com/OpenGeoscience/KTile/archive/master.zip
