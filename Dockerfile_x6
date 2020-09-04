@@ -84,7 +84,7 @@ RUN fix-permissions /$CONDA_DIR/geonotebook
 #RUN fix-permissions /jupyter.sh
 
 #VOLUME /notebooks
-WORKDIR /notebooks
+WORKDIR $HOME
 
 USER $NB_USER
 #USER root
