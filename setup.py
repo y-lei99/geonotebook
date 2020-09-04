@@ -282,6 +282,7 @@ setup(
             'geotiff = geonotebook.wrappers.file_reader:RasterIOReader',
             'tiff = geonotebook.wrappers.file_reader:RasterIOReader',
             'tif = geonotebook.wrappers.file_reader:RasterIOReader',
+            'TIF = geonotebook.wrappers.raster.file:RasterIOReader',
             'nc = geonotebook.wrappers.file_reader:RasterIOReader',
             'vrt = geonotebook.wrappers.file_reader:VRTReader',
         ],
