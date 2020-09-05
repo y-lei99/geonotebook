@@ -77,7 +77,7 @@ RUN pip install -U -r prerequirements.txt . && \
     jupyter nbextension enable --py geonotebook --sys-prefix 
     #jupyter labextension install geonotebook --sys-prefix && \
     #jupyter labextension enable geonotebook 
-RUN fix-permissions /$CONDA_DIR/geonotebook
+RUN fix-permissions $CONDA_DIR/geonotebook
 #RUN fix-permissions /usr/local/bin/
 #RUN fix-permissions /start.sh
 #RUN fix-permissions /start-notebook.sh
